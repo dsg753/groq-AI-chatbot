@@ -1,12 +1,19 @@
-# Groq AI Chatbot
+# dsg753 AI Chatbot
 
-🤖 A simple terminal-based AI chatbot built with Python and Groq. It uses the Groq API to generate responses based on user inputs.
+🤖 This is an AI chatbot application using Groq's API and `ipapi-py` to provide location-based responses.
+
+## IPAPI Integration
+
+The chatbot uses `ipapi-py` to determine the user's location based on their IP address. This information is included in the context provided to the AI model, allowing it to generate more personalized responses. To configure this feature, set the `USER_IP` environment variable in your `.env` file.
+
 
 ## Features
 
 - **AI Responses**: The chatbot uses the Groq API to generate responses based on user inputs.
 - **User Interaction**: Continuous user interaction until the user types "exit" or "quit" to exit.
 - **Error Handling**: Graceful handling of API errors.
+
+
 
 ## How to Run
 
