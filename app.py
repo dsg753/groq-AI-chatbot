@@ -30,7 +30,7 @@ def get_ai_response(user_input):
         return f"Error: {e}"
 
 if __name__ == "__main__":
-    print("Welcome to George`s AI chatbot! Type 'exit' to quit.")
+    print("Welcome to dsg753 AI chatbot! Type 'exit' to quit.")
     while True:
         user_input = input("\nYou: ")
         if user_input.lower() in ["exit", "quit"]:
