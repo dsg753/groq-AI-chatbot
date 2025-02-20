@@ -12,7 +12,7 @@ The chatbot uses `ipapi-py` to determine the user's location based on their IP a
 - **AI Responses**: The chatbot uses the Groq API to generate responses based on user inputs.
 - **User Interaction**: Continuous user interaction until the user types "exit" or "quit" to exit.
 - **Error Handling**: Graceful handling of API errors.
-
+- **User profile management**: The bot can recall old chat information 
 
 
 ## How to Run
