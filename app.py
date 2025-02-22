@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import groq
 import ipapi
 from user_profile import UserProfile
+import requests
 
 load_dotenv()
 
@@ -16,14 +17,33 @@ def get_location():
     except Exception as e:
         return f"Error: {e}"
 
+def get_weather(location):
+    api_key = os.getenv("WEATHER_API_KEY")
+    if not api_key:
+        return "Error: Weather API key missing."
+    
+    url = f"http://api.visualcrossing.com/elements/v1/weather/{location}?unitGroup=metric&key={api_key}&include=days"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        weather_data = response.json()
+        temperature = weather_data.get("days", [{}])[0].get("temp", "Unknown temperature")
+        return f"Current temperature in {location}: {temperature}°C"
+    else:
+        return f"Error: Unable to retrieve weather data ({response.status_code})"
+
 def get_ai_response(user_input, user_profile):
     try:
         location = get_location()
         profile = user_profile.get_profile()
-        conversation_history = profile.get("conversation_history", [])
+        conversation_history = profile.get("conversation_history", [])[-5:]  # Keep last 5 messages
         
         # Add the new user input to the conversation history
         conversation_history.append({"role": "user", "content": user_input})
+        
+        if "weather" in user_input.lower():
+            weather_info = get_weather(location)
+            return weather_info
         
         response = client.chat.completions.create(
             model="llama3-8b-8192",
