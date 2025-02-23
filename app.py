@@ -22,15 +22,15 @@ def get_weather(location):
     if not api_key:
         return "Error: Weather API key missing."
     
-    url = f"http://api.visualcrossing.com/elements/v1/weather/{location}?unitGroup=metric&key={api_key}&include=days"
-    response = requests.get(url)
-    
-    if response.status_code == 200:
+    url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}?unitGroup=metric&key={api_key}&include=days"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
         weather_data = response.json()
         temperature = weather_data.get("days", [{}])[0].get("temp", "Unknown temperature")
         return f"Current temperature in {location}: {temperature}°C"
-    else:
-        return f"Error: Unable to retrieve weather data ({response.status_code})"
+    except requests.exceptions.RequestException as e:
+        return f"Error: Unable to retrieve weather data ({e})"
 
 def get_ai_response(user_input, user_profile):
     try:
