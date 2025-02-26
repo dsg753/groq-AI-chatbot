@@ -32,6 +32,16 @@ def get_weather(location):
     except requests.exceptions.RequestException as e:
         return f"Error: Unable to retrieve weather data ({e})"
 
+def detect_preferred_language(user_input):
+    # Placeholder for language detection logic
+    # For simplicity, let's assume we detect language based on keywords
+    if any(word in user_input.lower() for word in ["hola", "gracias", "adiós"]):
+        return "Spanish"
+    elif any(word in user_input.lower() for word in ["bonjour", "merci", "au revoir"]):
+        return "French"
+    else:
+        return "English"
+
 def get_ai_response(user_input, user_profile):
     try:
         location = get_location()
@@ -41,6 +51,10 @@ def get_ai_response(user_input, user_profile):
         # Add the new user input to the conversation history
         conversation_history.append({"role": "user", "content": user_input})
         
+        # Detect preferred language
+        preferred_language = detect_preferred_language(user_input)
+        user_profile.update_profile("preferred_language", preferred_language)
+        
         if "weather" in user_input.lower():
             weather_info = get_weather(location)
             return weather_info
@@ -48,7 +62,7 @@ def get_ai_response(user_input, user_profile):
         response = client.chat.completions.create(
             model="llama3-8b-8192",
             messages=[
-                {"role": "system", "content": f"The user is from {location} and prefers {profile['preferred_language']} language."},
+                {"role": "system", "content": f"The user is from {location} and prefers {preferred_language} language."},
                 *conversation_history
             ]
         )
