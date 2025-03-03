@@ -2,47 +2,50 @@
 
 🤖 This is an AI chatbot application using Groq's API and `ipapi-py` to provide location-based responses.
 
-## IPAPI Integration
-
-The chatbot uses `ipapi-py` to determine the user's location based on their IP address. This information is included in the context provided to the AI model, allowing it to generate more personalized responses. To configure this feature, set the `USER_IP` environment variable in your `.env` file.
-
-
 ## Features
 
-- **AI Responses**: The chatbot uses the Groq API to generate responses based on user inputs.
-- **User Interaction**: Continuous user interaction until the user types "exit" or "quit" to exit.
-- **Error Handling**: Graceful handling of API errors.
-- **User profile management**: The bot can recall old chat information 
+- User Profile Management
+- Location Detection
+- Weather Information
+- Language Detection
+- AI-Powered Conversations
+- Error Handling
+- Environment Configuration
+- Interactive Command-Line Interface
 
+## IPAPI Integration
 
-## How to Run
+The chatbot uses `ipapi-py` to determine the user's location based on their IP address. This information is included in the context provided to the AI model, allowing it to generate more personalized responses.
 
-You need Python 3.x installed on your system.
+## Environment Configuration
 
-1. Clone the repository:
-    
-    git clone https://github.com/dsg753/groq-AI-chatbot.git
-    cd groq-AI-chatbot
-    
+Create a `.env` file in the root directory of the project with the following content:
 
-2. Install the required packages:
-    # install from PyPI
-pip install groq
+```
+GROQ_API_KEY=your_groq_api_key
+WEATHER_API_KEY=your_weather_api_key
+```
 
-3. Create a `.env` file in the root of the project and add your Groq API key:
-    
-    GROQ_API_KEY=your_groq_api_key
-    
+Replace `your_groq_api_key` and `your_weather_api_key` with your actual API keys.
 
-4. Run the chatbot:
-    
-    python app.py
-    
+## Installation
 
-## Environment Variables
+Install the required dependencies using the following command:
 
-Make sure to add the following environment variable in your `.env` file:
-- `GROQ_API_KEY`: Your API key for the Groq API.
+```sh
+pip install -r requirements.txt
+```
+
+## Running the Chatbot
+
+Run the chatbot using the following command:
+
+```sh
+python app.py
+```
+
+Type 'exit' to quit the chatbot.
+```
 
 ## License
 
