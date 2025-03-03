@@ -4,6 +4,7 @@ import groq
 import ipapi
 from user_profile import UserProfile
 import requests
+import time
 
 load_dotenv()
 
@@ -11,8 +12,7 @@ client = groq.Client(api_key=os.getenv("GROQ_API_KEY"))
 
 def get_location():
     try:
-        ip = os.getenv("USER_IP")
-        location = ipapi.location(ip=ip)
+        location = ipapi.location()
         return location.get("city", "Unknown location")
     except Exception as e:
         return f"Error: {e}"
@@ -21,20 +21,26 @@ def get_weather(location):
     api_key = os.getenv("WEATHER_API_KEY")
     if not api_key:
         return "Error: Weather API key missing."
-    
     url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}?unitGroup=metric&key={api_key}&include=days"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
-        weather_data = response.json()
-        temperature = weather_data.get("days", [{}])[0].get("temp", "Unknown temperature")
-        return f"Current temperature in {location}: {temperature}°C"
-    except requests.exceptions.RequestException as e:
-        return f"Error: Unable to retrieve weather data ({e})"
+    retries = 3
+    backoff_factor = 2
+    
+    for attempt in range(retries):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
+            weather_data = response.json()
+            temperature = weather_data.get("days", [{}])[0].get("temp", "Unknown temperature")
+            return f"Current temperature in {location}: {temperature}°C"
+        except requests.exceptions.RequestException as e:
+            if attempt < retries - 1:
+                wait_time = backoff_factor ** attempt
+                time.sleep(wait_time)
+            else:
+                return f"Error: Unable to retrieve weather data ({e})"
 
 def detect_preferred_language(user_input):
     # Placeholder for language detection logic
-    # For simplicity, let's assume we detect language based on keywords
     if any(word in user_input.lower() for word in ["hola", "gracias", "adiós"]):
         return "Spanish"
     elif any(word in user_input.lower() for word in ["bonjour", "merci", "au revoir"]):
@@ -46,7 +52,7 @@ def get_ai_response(user_input, user_profile):
     try:
         location = get_location()
         profile = user_profile.get_profile()
-        conversation_history = profile.get("conversation_history", [])[-5:]  # Keep last 5 messages
+        conversation_history = profile.get("conversation_history", [])  # Keep entire conversation history
         
         # Add the new user input to the conversation history
         conversation_history.append({"role": "user", "content": user_input})
