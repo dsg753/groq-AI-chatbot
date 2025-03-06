@@ -5,6 +5,9 @@ import ipapi
 from user_profile import UserProfile
 import requests
 import time
+from colorama import Fore, Style, init
+
+init(autoreset=True)
 
 load_dotenv()
 
@@ -90,9 +93,9 @@ if __name__ == "__main__":
     user_profile = UserProfile(user_id)
     
     while True:
-        user_input = input("\nYou: ")
+        user_input = input(Fore.GREEN + "\nYou: " + Style.RESET_ALL)
         if user_input.lower() in ["exit", "quit"]:
             print("\nGoodbye! 👋")
             break
         response = get_ai_response(user_input, user_profile)
-        print("AI:", response)
+        print(Fore.BLUE + "AI: " + response + Style.RESET_ALL)
