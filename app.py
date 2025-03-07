@@ -15,7 +15,8 @@ client = groq.Client(api_key=os.getenv("GROQ_API_KEY"))
 
 def get_location():
     try:
-        location = ipapi.location()
+        ip = os.getenv("USER_IP")
+        location = ipapi.location(ip=ip)
         return location.get("city", "Unknown location")
     except Exception as e:
         return f"Error: {e}"
